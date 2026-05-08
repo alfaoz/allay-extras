@@ -24,9 +24,15 @@ return {
     bin = {
       ["@launcher"] = {
         dest = "msks",
+        -- shell.run would sandbox the script and discard our path patch.
+        -- loadfile-with-env runs msks.lua in this launcher's environment,
+        -- so msks.lua sees the patched package.path and can resolve its
+        -- bare-name requires (ktwsl bundled, abstractInvLib as a dep).
         inline = "package.path = \"/usr/allay/lib/msks/?.lua;/usr/allay/lib/msks/?/init.lua;\""
-              .. " .. package.path\n"
-              .. "return shell.run(\"/usr/allay/lib/msks/msks.lua\", ...)\n",
+              .. "\n            .. \"/usr/allay/lib/?.lua;/usr/allay/lib/?/init.lua;\""
+              .. "\n            .. package.path\n"
+              .. "local fn = assert(loadfile(\"/usr/allay/lib/msks/msks.lua\", \"t\", _ENV))\n"
+              .. "return fn(...)\n",
       },
     },
     lib = {
