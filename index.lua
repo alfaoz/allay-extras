@@ -8,8 +8,8 @@ return {
   packages = {
     -- Graphics.
     pine3d = {
-      version = "main",
-      description = "3D rendering engine. require('pine3d.Pine3D')",
+      version = "1.0.0",
+      description = "3D rendering engine. require('pine3d')",
     },
     isometrih = {
       version = "main",

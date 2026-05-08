@@ -3,19 +3,17 @@
 -- A 3D rendering engine designed to be fast.
 -- Upstream: https://github.com/Xella37/Pine3D
 --
--- Pine3D uses Lua's libFolder pattern for sibling requires, so user code
--- must require the main file explicitly:
---
---     local Pine3D = require("pine3d.Pine3D")
---
--- This installs Pine3D.lua, betterblittle.lua, and noise.lua under
--- /usr/allay/lib/pine3d/. Models from the upstream repo (binary format)
--- are not installed; copy them from the repo as needed.
+-- Pine3D's Pine3D.lua uses the libFolder pattern for sibling requires
+-- ((...):match("(.-)[^%.]+$")), which only works when the file is
+-- loaded via a dotted require path. We ship an inline init.lua wrapper
+-- so user code can just `require("pine3d")` -- the wrapper forwards to
+-- `require("pine3d.Pine3D")`, which preserves the dotted call so the
+-- internal sibling lookups (betterblittle, noise) resolve.
 
 return {
   name = "pine3d",
-  version = "main",
-  description = "3D rendering engine for ComputerCraft. Use: require('pine3d.Pine3D').",
+  version = "1.0.0",
+  description = "3D rendering engine for ComputerCraft. Use: require('pine3d').",
   author = "Xella37",
   license = "MIT",
 
@@ -26,14 +24,15 @@ return {
       ["Pine3D.lua"]        = "Pine3D.lua",
       ["betterblittle.lua"] = "betterblittle.lua",
       ["noise.lua"]         = "noise.lua",
+      ["@init"] = {
+        dest = "init.lua",
+        inline = "return require(\"pine3d.Pine3D\")\n",
+      },
     },
   },
   hashes = {},
 
   post_install_message = [[
-pine3d installed under /usr/allay/lib/pine3d/.
-Use: local Pine3D = require("pine3d.Pine3D")
-(Note: not require("pine3d") — Pine3D's libFolder require pattern needs
-the explicit submodule reference.)
+pine3d installed. Use:  local Pine3D = require("pine3d")
 ]],
 }
