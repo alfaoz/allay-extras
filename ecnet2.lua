@@ -35,6 +35,10 @@ return {
   },
   hashes = {},
 
+  -- ecnet2's identity layer pulls in ccryptolib for ECC ops.
+  -- ccryptolib lives in unicornpkg-main; our compat translator handles it.
+  dependencies = { "ccryptolib" },
+
   post_install_message = [[
 ecnet2 installed. Use:  local ecnet = require("ecnet2")
 ]],
