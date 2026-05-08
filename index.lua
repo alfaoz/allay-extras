@@ -63,5 +63,11 @@ return {
       version = "main",
       description = "Simple Krist shop, installs as /bin/msks.",
     },
+
+    -- Developer tooling.
+    aua = {
+      version = "1.0.0",
+      description = "lua REPL with allay's package.path preset; run as /bin/aua.",
+    },
   },
 }
