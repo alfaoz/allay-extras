@@ -66,7 +66,7 @@ return {
 
     -- Developer tooling.
     aua = {
-      version = "1.0.0",
+      version = "1.0.1",
       description = "lua REPL with allay's package.path preset; run as /bin/aua.",
     },
   },

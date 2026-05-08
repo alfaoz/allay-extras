@@ -9,7 +9,7 @@
 
 return {
   name = "aua",
-  version = "1.0.0",
+  version = "1.0.1",
   description = "lua REPL with allay's package.path preset for require().",
   author = "alfa",
   license = "MIT",
@@ -21,13 +21,30 @@ return {
     bin = {
       ["@launcher"] = {
         dest = "aua",
-        -- 1) Prepend allay's lib dirs to this program's package.path.
-        -- 2) Load CC's stock lua REPL into _our_ env via loadfile-with-_ENV
-        --    so it inherits the patched package.path. shell.run would
-        --    sandbox and lose the patch -- same trick msks uses.
-        inline = "package.path = dofile(\"/usr/allay/setup.lua\") .. package.path\n"
-              .. "local fn = assert(loadfile(\"/rom/programs/lua.lua\", \"t\", _ENV))\n"
-              .. "return fn(...)\n",
+        -- The launcher needs to reach the REPL's package.path, not just
+        -- our own. CC's lua program calls cc.require.make(env, "/") which
+        -- builds a fresh package table with a hardcoded path -- it does
+        -- NOT inherit _ENV.package.path. So mutating package.path here
+        -- alone has no effect on the REPL's require().
+        --
+        -- Trick: patch cc.require.make before loading the REPL. The REPL
+        -- ends up calling our wrapper, which extends the returned
+        -- package's path with ours. From the REPL user's perspective,
+        -- require() now resolves /usr/allay/lib/ and /lib/.
+        inline =
+          "local extra = dofile(\"/usr/allay/setup.lua\")\n"
+       .. "package.path = extra .. package.path\n"
+       .. "local ok, cc_require = pcall(require, \"cc.require\")\n"
+       .. "if ok and cc_require and cc_require.make then\n"
+       .. "  local orig = cc_require.make\n"
+       .. "  cc_require.make = function(env, dir)\n"
+       .. "    local req, pkg = orig(env, dir)\n"
+       .. "    pkg.path = extra .. (pkg.path or \"\")\n"
+       .. "    return req, pkg\n"
+       .. "  end\n"
+       .. "end\n"
+       .. "local fn = assert(loadfile(\"/rom/programs/lua.lua\", \"t\", _ENV))\n"
+       .. "return fn(...)\n",
       },
     },
   },
