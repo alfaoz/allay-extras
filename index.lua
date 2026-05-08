@@ -1,9 +1,9 @@
 return {
   spec = "allay/v1.0.0",
   format = "allay",
-  name = "alfaoz/allay-extras",
+  name = "allaycc/extras",
   description = "Curated CC: Tweaked libraries that aren't in unicornpkg-main. Add this source to extend allay's catalog with popular community libraries.",
-  homepage = "https://github.com/alfaoz/allay-extras",
+  homepage = "https://github.com/allaycc/extras",
 
   packages = {
     -- Graphics.

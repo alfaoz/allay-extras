@@ -15,7 +15,7 @@ return {
   license = "MIT",
 
   -- Required by the schema even though every file is inline. Unused.
-  base_url = "https://raw.githubusercontent.com/alfaoz/allay-extras/main",
+  base_url = "https://raw.githubusercontent.com/allaycc/extras/main",
 
   files = {
     bin = {

@@ -7,7 +7,7 @@ flow as native allay packages.
 
 ## Add the source
 
-    allay source add alfaoz/allay-extras
+    allay source add allaycc/extras
 
 Then:
 
